@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import ReactDom from "react-dom/client";
 
 import "./index.css";
@@ -50,40 +50,92 @@ const pizzaData = [
 
 function App() {
   return (
-    <div>
-      <h1>Hello React!</h1>
-
-      <div className="pizzas">
-        {pizzaData.map((pizza) => {
-          return (
-            <Pizza
-              name={pizza.name}
-              ingredients={pizza.ingredients}
-              price={pizza.price}
-              img={pizza.photoName}
-              soldOut={pizza.soldOut}
-            />
-          );
-        })}
-      </div>
+    <div className="container">
+      <Header />
+      <Menu />
+      <Footer />
     </div>
   );
 }
 
-const Pizza = (props) => {
+const Header = () => {
   return (
-    <div class="pizza">
-      <div>
-        <img src={props.img} alt="" />
-      </div>
-      <div>
-        <h2>{props.name}</h2>
-        <p>
-          Ingredients: <span>{props.ingredients}</span>
-        </p>
-        <p>${props.price}</p>
-      </div>
+    <div className="header">
+      <h1>Fast React Pizza Co.</h1>
     </div>
+  );
+};
+
+const Footer = () => {
+  const hour = new Date().getHours();
+  const openHour = 12;
+  const closeHour = 22;
+  const isOpen = hour >= openHour && hour <= closeHour;
+
+  return (
+    <footer className="footer" style={{ textAlign: "center" }}>
+      {isOpen ? (
+        <Order closeHour={closeHour} />
+      ) : (
+        <p>
+          We're happy to welcome you between {openHour}:00 and {closeHour}:00.
+        </p>
+      )}
+    </footer>
+  );
+};
+
+const Order = ({ closeHour }) => {
+  return (
+    <div className="order">
+      <p>We're curently open until {closeHour}:00.</p>
+      <button className="btn">Order</button>
+    </div>
+  );
+};
+
+const Menu = () => {
+  const pizzas = pizzaData;
+  const numPizzas = pizzas.length;
+
+  return (
+    <main className="menu">
+      <h2>our menu</h2>
+
+      {numPizzas > 0 ? (
+        <Fragment>
+          <p>
+            Authentic Italien cuisine. 6 creative dishes to choose from. All
+            from our stone oven, all organic, all delicious.
+          </p>
+
+          <ul className="pizzas">
+            {pizzas.map((pizza) => {
+              return <Pizza key={pizza.name} pizza={pizza} />;
+            })}
+          </ul>
+        </Fragment>
+      ) : (
+        <p>We're still working on our menu. Please come back later.</p>
+      )}
+    </main>
+  );
+};
+
+const Pizza = ({ pizza }) => {
+  console.log();
+
+  return (
+    <li className={`pizza ${pizza.soldOut && "sold-out"}`}>
+      <div>
+        <img src={pizza.photoName} alt="" />
+      </div>
+      <div>
+        <h2>{pizza.name}</h2>
+        <p>{pizza.ingredients}</p>
+        <span>{pizza.soldOut ? "SOLD OUT" : `$${pizza.price}`} </span>
+      </div>
+    </li>
   );
 };
 
